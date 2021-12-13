@@ -8,6 +8,19 @@ app.use(bodyParser.json())
 
 app.listen(PORT, () => console.log(`listening port ${PORT}`))
 
+app.use((req, res, next) => {
+  const tunnel = req.body ? req.body.tunnel : null
+  if (tunnel) {
+    next()
+  } else {
+    res.send({ message: 'Unathorised' })
+  }
+})
+
+app.get('/', (res, req) => {
+  res.send('Congratilation!')
+})
+
 app.get('/api/welcome', (req, res) => {
   res.send('welcome!')
 })
