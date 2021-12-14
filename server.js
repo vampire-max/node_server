@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
-const { resetWatchers } = require('nodemon/lib/monitor/watch')
 const PORT = 3001
 
 require('dotenv').config()
@@ -17,7 +16,7 @@ mongoose
   .then(() => console.log('connect to db'))
   .catch((err) => console.log(("couldn't connect to db, here is why:", err)))
 
-const bookModel = new Schema(
+const bookModel = mongoose.Schema(
   {
     title: { type: String, require: true },
     description: { type: String },
@@ -28,27 +27,7 @@ const bookModel = new Schema(
 
 const Book = mongoose.model('Book', bookModel)
 
-Book({ title: 'Book 1', description: 'solid principle', author: 'author1' })
-  .save()
-  .then((newBook) => console.log(newBook))
-  .catch((err) => console.log(err))
-
-Book.find().then((books) => console.log(books))
-
-const tunnelCheck = (req, res, next) => {
-  const tunnel = req.body ? req.body.tunnel : null
-  if (tunnel) {
-    next()
-  } else {
-    res.send({ message: 'Unauthorized' })
-  }
-}
-
-app.post('/', tunnelCheck, (req, res) => {
-  res.send('Congratulation!')
-})
-
-app.post('/new-book', (req, res) => {
+app.post('/api/new-book', (req, res) => {
   new Book({
     title: req.body.title,
     description: req.body.description,
@@ -64,8 +43,22 @@ app.post('/new-book', (req, res) => {
       res.status(500).json({ code: '500', message: 'something went wrong' })
     })
 })
+// Book.find().then((books) => console.log(books))
 
 // require('./routes')(app)
+
+// const tunnelCheck = (req, res, next) => {
+//   const tunnel = req.body ? req.body.tunnel : null
+//   if (tunnel) {
+//     next()
+//   } else {
+//     res.send({ message: 'Unauthorized' })
+//   }
+// }
+
+// app.post('/', tunnelCheck, (req, res) => {
+//   res.send('Congratulation!')
+// })
 
 // app.get('/api/welcome', (req, res) => {
 //   res.send('welcome!')
