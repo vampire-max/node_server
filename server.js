@@ -101,7 +101,7 @@ app.get('/api/get-author', (req, res) => {
   })
 })
 app.put('/api/update-author/:id', (req, res) => {
-  Author.updateOne({ id: req.query.id })
+  Author.updateOne({ id: req.params.id })
     .then(() => {
       res.status(201).json({ message: 'author updated successfully' })
     })
@@ -111,7 +111,7 @@ app.put('/api/update-author/:id', (req, res) => {
 })
 
 app.delete('/api/delete-author/:id', (req, res) => {
-  Author.deleteOne({ id: req.query.id })
+  Author.deleteOne({ id: req.params.id })
     .then(() => {
       res.json({ message: 'author deleted successfully' })
     })
