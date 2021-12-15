@@ -90,6 +90,11 @@ app.post('/api/add-author', (req, res) => {
     })
 })
 
+app.get('/api/get-author', (req, res) => {
+  const filterName = req.query.name
+    ? { name: new RegExp(`${req.query.name}`, 'ig') }
+    : {}
+})
 app.put('/api/update-author/:id', (req, res) => {
   Author.updateOne({ id: req.query.id })
     .then(() => {
