@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
+const res = require('express/lib/response')
 const PORT = 3001
 
 require('dotenv').config()
@@ -27,7 +28,6 @@ const bookModel = mongoose.Schema(
 const Book = mongoose.model('Book', bookModel)
 
 app.post('/api/new-book', (req, res) => {
-  res.json({ testing: 'ok' })
   new Book({
     title: req.body.title,
     description: req.body.description,
@@ -42,6 +42,20 @@ app.post('/api/new-book', (req, res) => {
       console.log(err)
       res.status(500).json({ code: '500', message: 'something went wrong' })
     })
+})
+
+app.get('api/get-books', (req, res) => {
+  let title = req.body.title
+  let description = req.body.description
+  let author = req.body.author
+
+  let search = Book.find({
+    title: title,
+    description: description,
+    author: author,
+  })
+
+  res.json(search)
 })
 
 app.listen(PORT, () => console.log(`listening port ${PORT}`))
