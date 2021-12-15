@@ -2,8 +2,6 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
-const { required } = require('nodemon/lib/config')
-const { resetWatchers } = require('nodemon/lib/monitor/watch')
 const PORT = 3001
 
 require('dotenv').config()
@@ -87,6 +85,7 @@ app.post('/api/add-author', (req, res) => {
       res.json({ message: 'add new author' })
     })
     .catch((err) => {
+      console.log('err', err)
       res.status(500).json({ message: 'something went wrong' })
     })
 })
@@ -100,8 +99,15 @@ app.get('/api/get-author', (req, res) => {
     res.json(authors)
   })
 })
+
+const id = mongoose.Types.ObjectId(ObjectIdString)
+
 app.put('/api/update-author/:id', (req, res) => {
-  Author.updateOne({ id: req.params[id] })
+  Author.findOneAndUpdate(
+    { _id: req.params.id },
+    { ...req.body },
+    { new: true },
+  )
     .then(() => {
       res.status(201).json({ message: 'author updated successfully' })
     })
@@ -111,7 +117,7 @@ app.put('/api/update-author/:id', (req, res) => {
 })
 
 app.delete('/api/delete-author/:id', (req, res) => {
-  Author.deleteOne({ id: req.params[id] })
+  Author.deleteOne({ id: req.params.id })
     .then(() => {
       res.json({ message: 'author deleted successfully' })
     })
