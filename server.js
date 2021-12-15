@@ -45,17 +45,21 @@ app.post('/api/new-book', (req, res) => {
 })
 
 app.get('api/get-books', (req, res) => {
-  let title = req.body.title
-  let description = req.body.description
-  let author = req.body.author
+  // let search = Book.find({
+  //   title: new RegExp(`${req.query.title}`, 'ig'),
+  //   description: new RegExp(`${req.query.description}`, 'ig'),
+  //   author: new RegExp(`${req.query.author}`, 'ig'),
+  // })
 
-  let search = Book.find({
-    title: title,
-    description: description,
-    author: author,
+  // let search = req.query.title
+
+  const query = req.query.title
+    ? { title: new RegExp(`${req.query.title}, 'ig`) }
+    : {}
+
+  Book.find(query).then((books) => {
+    res.json(books)
   })
-
-  res.json(search)
 })
 
 app.listen(PORT, () => console.log(`listening port ${PORT}`))
