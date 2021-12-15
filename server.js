@@ -3,6 +3,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const { required } = require('nodemon/lib/config')
+const { resetWatchers } = require('nodemon/lib/monitor/watch')
 const PORT = 3001
 
 require('dotenv').config()
@@ -94,6 +95,10 @@ app.get('/api/get-author', (req, res) => {
   const filterName = req.query.name
     ? { name: new RegExp(`${req.query.name}`, 'ig') }
     : {}
+
+  Author.find(filterName).then((authors) => {
+    res.json(authors)
+  })
 })
 app.put('/api/update-author/:id', (req, res) => {
   Author.updateOne({ id: req.query.id })
