@@ -1,13 +1,12 @@
-const express = require("express");
-const app = express();
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const PORT = 3001;
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+// const mongoose = require('mongoose')
+const PORT = 3001
 
-require("dotenv").config();
+require('dotenv').config()
 
-app.use(bodyParser.json());
-app.listen(PORT, () => console.log(`listening port ${PORT}`));
+app.use(bodyParser.json())
 
 // mongoose
 //   .connect(process.env.MONGO_URI, {
@@ -27,8 +26,8 @@ app.listen(PORT, () => console.log(`listening port ${PORT}`));
 //
 // const Book = mongoose.model('Book', bookModel)
 
-app.post("/api/new-book", (req, res) => {
-  res.json({ testing: "ok" });
+app.post('/api/new-book', (req, res) => {
+  res.json({ testing: 'ok' })
   // new Book({
   //   title: req.body.title,
   //   description: req.body.description,
@@ -43,4 +42,6 @@ app.post("/api/new-book", (req, res) => {
   //     console.log(err);
   //     res.status(500).json({ code: "500", message: "something went wrong" });
   //   });
-});
+})
+
+app.listen(PORT, () => console.log(`listening port ${PORT}`))
