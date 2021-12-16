@@ -1,19 +1,19 @@
-const express = require("express");
-const app = express();
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const PORT = 3001;
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const PORT = 3001
 
-require("dotenv").config();
+require('dotenv').config()
 
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
   })
-  .then(() => console.log("connect to db"))
-  .catch((err) => console.log(("couldn't connect to db, here is why:", err)));
+  .then(() => console.log('connect to db'))
+  .catch((err) => console.log(("couldn't connect to db, here is why:", err)))
 
 const bookModel = mongoose.Schema(
   {
@@ -21,14 +21,15 @@ const bookModel = mongoose.Schema(
     description: { type: String },
     author: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Author",
+      ref: 'Author',
     },
   },
-  { timestamps: true }
-);
-const Book = mongoose.model("Book", bookModel);
+  { timestamps: true },
+)
 
-app.post("/api/new-book", (req, res) => {
+const Book = mongoose.model('Book', bookModel)
+
+app.post('/api/new-book', (req, res) => {
   new Book({
     title: req.body.title,
     description: req.body.description,
@@ -36,37 +37,40 @@ app.post("/api/new-book", (req, res) => {
   })
     .save()
     .then((newBook) => {
-      console.log(newBook);
-      res.json({ code: "ok", message: "book has been added", book: newBook });
+      console.log(newBook)
+      res.json({ code: 'ok', message: 'book has been added', book: newBook })
     })
     .catch((err) => {
-      console.log(err);
-      res.status(500).json({ code: "500", message: "something went wrong" });
-    });
-});
-app.get("/api/get-books", (req, res) => {
+      console.log(err)
+      res.status(500).json({ code: '500', message: 'something went wrong' })
+    })
+})
+
+app.get('/api/get-book', (req, res) => {
   const query = req.query.title
-    ? { title: new RegExp(`${req.query.title}`, "ig") }
-    : {};
+    ? { title: new RegExp(`${req.query.title}`, 'ig') }
+    : {}
 
   Book.find(query)
-    .populate("author")
+    .populate('author')
     .then((books) => {
-      res.json(books);
-    });
-});
-app.put("/api/update-book/:id", (req, res) => {
+      res.json(books)
+    })
+})
+
+app.put('/api/update-book/:id', (req, res) => {
   Book.findOne({ _id: req.params.id })
-    .populate("author")
-    .then(() => {
-      res.json({ message: "book updated successfully" });
-    });
-});
-app.delete("/api/delete-book/:id", (req, res) => {
+    .populate({ path: 'author', select: ' -_id name number' })
+    .then((books) => {
+      res.json(books)
+    })
+})
+
+app.delete('/api/delete-book/:id', (req, res) => {
   Book.deleteOne({ _id: req.params.id }).then(() => {
-    res.json({ message: "book deleted successfully" });
-  });
-});
+    res.json({ message: 'book deleted successfully' })
+  })
+})
 
 const authorModel = mongoose.Schema(
   {
@@ -75,11 +79,12 @@ const authorModel = mongoose.Schema(
     genre: { type: String, required: true },
     number: { type: String, required: true },
   },
-  { timestamps: true }
-);
-const Author = mongoose.model("Author", authorModel);
+  { timestamps: true },
+)
 
-app.post("/api/add-author", (req, res) => {
+const Author = mongoose.model('Author', authorModel)
+
+app.post('/api/add-author', (req, res) => {
   new Author({
     name: req.body.name,
     address: req.body.address,
@@ -88,45 +93,48 @@ app.post("/api/add-author", (req, res) => {
   })
     .save()
     .then((newAuthor) => {
-      console.log(newAuthor);
-      res.json({ message: "add new author" });
+      console.log(newAuthor)
+      res.json({ message: 'add new author' })
     })
     .catch((err) => {
-      console.log("err", err);
-      res.status(500).json({ message: "something went wrong" });
-    });
-});
-app.get("/api/get-author", (req, res) => {
+      console.log('err', err)
+      res.status(500).json({ message: 'something went wrong' })
+    })
+})
+
+app.get('/api/get-author', (req, res) => {
   const filterName = req.query.name
-    ? { name: new RegExp(`${req.query.name}`, "ig") }
-    : {};
+    ? { name: new RegExp(`${req.query.name}`, 'ig') }
+    : {}
 
   Author.find(filterName).then((authors) => {
-    console.log(authors);
-    res.json(authors);
-  });
-});
-app.put("/api/update-author/:id", (req, res) => {
+    console.log(author)
+    res.json(authors)
+  })
+})
+
+app.put('/api/update-author/:id', (req, res) => {
   Author.findOneAndUpdate(
     { _id: req.params.id },
     { ...req.body },
-    { new: true }
+    { new: true },
   )
     .then(() => {
-      res.status(201).json({ message: "author updated successfully" });
+      res.status(201).json({ message: 'author updated successfully' })
     })
     .catch((err) => {
-      res.status(400).json({ message: "something went wrong" });
-    });
-});
-app.delete("/api/delete-author/:id", (req, res) => {
+      res.status(400).json({ message: 'something went wrong' })
+    })
+})
+
+app.delete('/api/delete-author/:id', (req, res) => {
   Author.deleteOne({ _id: req.params.id })
     .then(() => {
-      res.json({ message: "author deleted successfully" });
+      res.json({ message: 'author deleted successfully' })
     })
     .catch((err) => {
-      res.status(400).json({ message: "something went wrong" });
-    });
-});
+      res.status(400).json({ message: 'something went wrong' })
+    })
+})
 
-app.listen(PORT, () => console.log(`listening port ${PORT}`));
+app.listen(PORT, () => console.log(`listening port ${PORT}`))
