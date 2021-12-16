@@ -1,3 +1,4 @@
 module.exports = (app) => {
-  require('./api.route')(app)
+  require('./api.author')(app)
+  require('/api.book')(app)
 }
