@@ -19,7 +19,10 @@ const bookModel = mongoose.Schema(
   {
     title: { type: String, required: true },
     description: { type: String },
-    author: { type: String, required: true },
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Author',
+    },
   },
   { timestamps: true },
 )
@@ -61,6 +64,14 @@ app.get('/api/get-books', (req, res) => {
   })
 })
 
+app.put('/api/update-book/:id', (req, res) => {
+  Book.findOne({ _id: req.params.id })
+    .populate('author')
+    .then(() => {
+      res.json({ message: 'book updated successfully' })
+    })
+})
+
 const authorModel = mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -82,6 +93,7 @@ app.post('/api/add-author', (req, res) => {
   })
     .save()
     .then((newAuthor) => {
+      console.log(newAuthor)
       res.json({ message: 'add new author' })
     })
     .catch((err) => {
@@ -96,6 +108,7 @@ app.get('/api/get-author', (req, res) => {
     : {}
 
   Author.find(filterName).then((authors) => {
+    console.log(author)
     res.json(authors)
   })
 })
