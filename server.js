@@ -100,7 +100,7 @@ app.get('/api/get-author', (req, res) => {
   })
 })
 
-const id = mongoose.Types.ObjectId(ObjectIdString)
+// const id = mongoose.Types.ObjectId(objectIdSring)
 
 app.put('/api/update-author/:id', (req, res) => {
   Author.findOneAndUpdate(
@@ -117,7 +117,7 @@ app.put('/api/update-author/:id', (req, res) => {
 })
 
 app.delete('/api/delete-author/:id', (req, res) => {
-  Author.deleteOne({ id: req.params.id })
+  Author.deleteOne({ _id: req.params.id })
     .then(() => {
       res.json({ message: 'author deleted successfully' })
     })
